@@ -1,6 +1,6 @@
 # 📚 PDFSplit — PDF Chapter Extractor
 
-A **free, open-source web app** that intelligently splits large PDF books into individual chapter PDFs. Perfect for students preparing for exams by practicing with AI-generated MCQs on specific chapters.
+A **free, open-source web app** that intelligently splits large PDF books into individual chapter PDFs. Perfect for students preparing for exams by dividing large books (PDFs) into small chunks(splits) so that the BCQs generator apps are able to accept light weight PDF splits instead of large(requiring more space) Books.
 
 **Live Demo:** (https://pdf-split-gamma.vercel.app/) | **GitHub:** (https://github.com/MaryamShaikh124/pdf_split)]
 
@@ -14,7 +14,7 @@ A **free, open-source web app** that intelligently splits large PDF books into i
 - Upload **full books** (any size)
 - Auto-detect or **manually define chapters**
 - Download chapter PDFs separately
-- Upload each chapter to Claude for **exam prep MCQs**
+- Upload each chapter to MCQ generator app for **exam prep MCQs**
 
 ---
 
@@ -37,14 +37,7 @@ Complete manual control over chapter boundaries:
 | **Edit splits** | Click to change start/end page numbers |
 | **Delete splits** | Remove unwanted chapters (pages absorbed by neighbors) |
 | **Rename chapters** | Click name to edit on the fly |
-| **Validation** | Real-time constraints (no overlaps, no gaps) |
 
-### 🧠 Smart Reconciliation Logic
-When you edit a split's page range:
-- Subsequent splits **auto-adjust** to prevent gaps
-- **Zero-page splits are removed** automatically
-- **Page coverage guaranteed** — all pages 1 to total are always covered
-- Edit history: undo changes by resetting to auto-detected splits
 
 ### 💾 Zero Server, 100% Browser
 - **No uploads to servers** — all processing happens in your browser
@@ -64,13 +57,16 @@ When you edit a split's page range:
 ### Step 1: Upload Your Book
 1. Click the upload zone or drag-drop a PDF
 2. App analyzes structure for ~10–15 seconds
-3. Chapters auto-detected and displayed
+3. select any one option: manual or auto split
+4. For manual, create split by your own self by viewing the PDF on the right hand side.
+5. For auto split, select small (5 pages per split), medium (20 pages per split), large (50 pages per split)
+6. and then the splits are created auto according to selected option that can also be edit if needed.
 
 ### Step 2: Review & Customize (Optional)
 - **See all chapters** in a scrollable list
 - **Click a chapter name** to rename it
 - **Click page numbers** to edit the range
-- **Delete** unwanted chapters with the ✕ button
+- **Delete** unwanted chapters with the delete button
 
 ### Step 3: Add Custom Splits (Optional)
 Fill in the "+ ADD / DEFINE A SPLIT" form:
@@ -78,18 +74,15 @@ Fill in the "+ ADD / DEFINE A SPLIT" form:
 - **From page:** Starting page number
 - **To page:** Ending page number
 
-The tool handles overlaps automatically:
-- If range spans multiple existing splits → they're adjusted
-- All pages stay covered, no gaps allowed
 
 ### Step 4: Generate & Download
 1. Click **✂️ Generate N PDFs**
 2. Wait for splitting to complete (shows progress)
 3. Download individual PDFs or all at once
-4. Each PDF is ready to upload to Claude
+  
 
 ### Step 5: Prepare for Exams
-Upload any chapter PDF to Claude and ask:
+Upload any chapter PDF to app and ask:
 - "Generate 20 multiple-choice questions from this chapter"
 - "Create short-answer questions testing core concepts"
 - "Make a quiz with difficulty levels from beginner to advanced"
@@ -140,31 +133,6 @@ User PDF → PDF.js (read) → Auto-detect chapters → React UI
 - Works on: Chrome, Firefox, Safari, Edge (latest versions)
 
 ---
-
-## 🚀 Deployment Options
-
-### Option 1: Vercel (Recommended) ⚡
-Vercel is a platform for deploying the fastest React sites. You can deploy your site with zero configuration to the best frontend infrastructure.
-
-**Steps:**
-```bash
-# 1. Install Vercel CLI
-npm install -g vercel
-
-# 2. From project root, deploy
-vercel
-
-# 3. Follow prompts (authenticate with GitHub)
-# Done! Your site is live at *.vercel.app
-```
-
-**Auto-redeploy:** Push to GitHub → auto-deploys on every commit
-
-### Option 2: Netlify
-```bash
-npm run build
-# Drag-drop the dist/ folder to netlify.app
-```
 
 ### Option 3: GitHub Pages
 ```bash
@@ -226,19 +194,10 @@ npm run preview
 ## ⚙️ Advanced Features
 
 ### Edge Cases Handled
-- ✅ **Overlapping splits** → auto-reconciled
-- ✅ **Gaps in coverage** → detected & warned
 - ✅ **Page range out of bounds** → validation errors
 - ✅ **Zero-width splits** → auto-removed
 - ✅ **Large PDFs (300MB+)** → processed in-browser with streaming
 
-
-### Split Reconciliation Algorithm
-When you edit split A:
-1. **Forward pass:** Adjust all splits after A to prevent overlap
-2. **Backward pass:** Adjust all splits before A to fill gaps
-3. **Cleanup:** Remove zero-width splits
-4. **Guarantee:** Pages 1 to total always fully covered
 
 Example:
 ```
