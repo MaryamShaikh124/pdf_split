@@ -39,8 +39,17 @@ export default function App() {
   const [manualInputs, setManualInputs] = useState({ title: '', start: '', end: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'info' | 'error'>('success');
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const showNotification = (message: string, type: 'success' | 'info' | 'error' = 'success', duration = 3000) => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), duration);
+  };
 
   const handleFile = async (selectedFile: File) => {
     if (!selectedFile || selectedFile.type !== 'application/pdf') return;
@@ -107,8 +116,7 @@ export default function App() {
     setManualInputs({ ...manualInputs, title: '', start: '', end: '' });
     
     // Show success toast
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+    showNotification('Split created successfully', 'success');
   };
 
   const handleSplit = async () => {
@@ -121,6 +129,7 @@ export default function App() {
     }
 
     setState('splitting');
+    showNotification('Downloading started...', 'info');
     const selectedChapters = chapters.filter(c => selectedIds.has(c.id));
     
     try {
@@ -140,10 +149,11 @@ export default function App() {
         URL.revokeObjectURL(url);
       });
 
+      showNotification(`Downloaded ${selectedChapters.length} file(s) successfully`, 'success');
       setState('complete');
     } catch (error) {
       console.error(error);
-      alert('Failed to split PDF.');
+      showNotification('Failed to split PDF', 'error');
       setState('results');
     }
   };
@@ -151,6 +161,7 @@ export default function App() {
   const downloadSingle = async (chapter: Chapter) => {
     if (!file) return;
     try {
+      showNotification(`Downloading "${chapter.title}"...`, 'info');
       const [blob] = await splitPDF(file, [chapter]);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -161,9 +172,10 @@ export default function App() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      showNotification(`"${chapter.title}" downloaded successfully`, 'success');
     } catch (error) {
       console.error(error);
-      alert('Failed to split PDF.');
+      showNotification('Failed to download PDF', 'error');
     }
   };
 
@@ -220,7 +232,11 @@ export default function App() {
   };
 
   const removeChapter = (id: string) => {
+    const chapter = chapters.find(c => c.id === id);
     setChapters(prev => prev.filter(c => c.id !== id));
+    if (chapter) {
+      showNotification(`"${chapter.title}" deleted`, 'success');
+    }
   };
 
   return (
@@ -808,10 +824,16 @@ export default function App() {
                       initial={{ opacity: 0, y: 50, x: '-50%' }}
                       animate={{ opacity: 1, y: 0, x: '-50%' }}
                       exit={{ opacity: 0, y: 20, x: '-50%' }}
-                      className="fixed bottom-10 left-1/2 z-[100] px-8 py-4 bg-emerald-600 text-white rounded-2xl shadow-2xl font-bold flex items-center gap-3 border border-emerald-400/30"
+                      className={`fixed bottom-10 left-1/2 z-[100] px-8 py-4 text-white rounded-2xl shadow-2xl font-bold flex items-center gap-3 border ${
+                        toastType === 'success' ? 'bg-emerald-600 border-emerald-400/30' :
+                        toastType === 'info' ? 'bg-blue-600 border-blue-400/30' :
+                        'bg-red-600 border-red-400/30'
+                      }`}
                     >
-                      <CheckCircle2 className="w-5 h-5 text-emerald-200" />
-                      Split created successfully
+                      {toastType === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-200" />}
+                      {toastType === 'info' && <Loader2 className="w-5 h-5 animate-spin text-blue-200" />}
+                      {toastType === 'error' && <Trash2 className="w-5 h-5 text-red-200" />}
+                      {toastMessage}
                     </motion.div>
                   )}
                 </AnimatePresence>
