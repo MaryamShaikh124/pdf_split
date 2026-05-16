@@ -86,7 +86,7 @@ export function PdfPreview({ file, pageNumber }: PdfPreviewProps) {
           width: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(15, 23, 42, 0.5);
+          background: rgba(183, 189, 205, 0.5);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background: rgba(59, 130, 246, 0.3);
