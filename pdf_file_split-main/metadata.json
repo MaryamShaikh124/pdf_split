@@ -1,0 +1,6 @@
+{
+  "name": "PDFSplit",
+  "description": "A powerful in-browser PDF splitting tool that allows you to extract segments and split books into manageable pages for easy analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
